@@ -16,7 +16,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task ListAndGetTorrent()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
@@ -35,12 +35,12 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AddRemoveTorrentByMagnet()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
 
-            Torrent torrent = await client.AddTorrentByMagnet("magnet:?xt=urn:btih:30987c19cf0eae3cf47766f387c621fa78a58ab9&dn=debian-9.2.1-amd64-netinst.iso");
+            Torrent torrent = await client.AddTorrentByMagnet(Constants.TorrentMagnet);
             Assert.IsNotNull(torrent);
 
             Thread.Sleep(1000);
@@ -55,12 +55,12 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AddRemoveTorrentByFile()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
 
-            Torrent torrent = await client.AddTorrentByFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "test.torrent"));
+            Torrent torrent = await client.AddTorrentByFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Constants.TestTorrentFilename));
             Assert.IsNotNull(torrent);
 
             Thread.Sleep(1000);
@@ -75,7 +75,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task PauseResumeTorrent()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);

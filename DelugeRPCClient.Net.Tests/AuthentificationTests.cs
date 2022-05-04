@@ -9,7 +9,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]        
         public async Task LoginLogout()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
             bool logoutResult = await client.Logout();

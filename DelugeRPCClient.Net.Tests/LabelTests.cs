@@ -14,7 +14,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task ListLabels()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
@@ -30,17 +30,17 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AddRemoveLabel()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
 
-            bool addLabelResult = await client.AddLabel("testlabel");
+            bool addLabelResult = await client.AddLabel(Constants.TestLabelName);
             Assert.IsTrue(addLabelResult);
 
             Thread.Sleep(1000);
 
-            bool removeLabelResult = await client.RemoveLabel("testlabel");
+            bool removeLabelResult = await client.RemoveLabel(Constants.TestLabelName);
             Assert.IsTrue(removeLabelResult);
 
             bool logoutResult = await client.Logout();
@@ -50,7 +50,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AssignLabel()
         {
-            DelugeClient client = new DelugeClient(url: "http://localhost:8112/json", password: "deluge");
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
@@ -61,7 +61,7 @@ namespace DelugeRPCClient.Net.Tests
             
             Torrent torrent = torrents[0];
 
-            bool assignResult = await client.SetTorrentLabel(torrent.Hash, "testlabel");
+            bool assignResult = await client.SetTorrentLabel(torrent.Hash, Constants.TestLabelName);
             Assert.IsTrue(assignResult);
             Thread.Sleep(1000);
 
@@ -69,7 +69,7 @@ namespace DelugeRPCClient.Net.Tests
             Assert.IsTrue(unsertLabelResult);
             Thread.Sleep(1000);
 
-            bool removeLabelResult = await client.RemoveLabel("testlabel");
+            bool removeLabelResult = await client.RemoveLabel(Constants.TestLabelName);
             Assert.IsTrue(removeLabelResult);
             Thread.Sleep(1000);
 
