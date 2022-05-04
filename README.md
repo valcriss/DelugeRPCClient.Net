@@ -11,6 +11,13 @@ The library targets multiple frameworks :
 - .NET 4.8
 
 ---
+## Installation
+Simply download and restore nuget packages https://www.nuget.org/packages/DelugeRPCClient.Net/ or install it from package manager
+```
+PM> Install-Package DelugeRPCClient.Net -Version x.x.x
+```
+
+---
 ## Create a DelugeClient Object
 ```C#
 DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
