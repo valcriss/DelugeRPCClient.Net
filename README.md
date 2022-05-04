@@ -43,90 +43,64 @@ bool logoutResult = await client.Logout();
 
 List torrents
 ```C#
-DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
-bool loginResult = await client.Login();
 List<Torrent> torrents = await client.ListTorrents();
-bool logoutResult = await client.Logout();
 ```
 
 Get torrent by hash
 ```C#
-DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
-bool loginResult = await client.Login();
 Torrent torrent = await client.GetTorrent(torrentHash);
-bool logoutResult = await client.Logout();
 ```
 
 #### Add Torrent
 
 Add a torrent by magnet uri
 ```C#
-bool loginResult = await client.Login();
 Torrent torrent = await client.AddTorrentByMagnet(torrentMagnetUri);
-bool logoutResult = await client.Logout();
 ```
 
 Add a torrent by .torrent file
 ```C#
-bool loginResult = await client.Login();
 Torrent torrent = await client.AddTorrentByFile(torrentFilename);
-bool logoutResult = await client.Logout();
 ```
 
 #### Remove Torrent
 ```C#
-bool loginResult = await client.Login();
 bool removeTorrentResult = await client.RemoveTorrent(torrentHash);
-bool logoutResult = await client.Logout();
 ```
 
 #### Pause and Resume Torrent
 Pause Torrent
 ```C#
-bool loginResult = await client.Login();
 bool pauseResult = await client.PauseTorrent(torrentHash);
-bool logoutResult = await client.Logout();
 ```
 Resume Torrent
 ```C#
-bool loginResult = await client.Login();
 bool resumeResult = await client.ResumeTorrent(torrentHash);
-bool logoutResult = await client.Logout();
 ```
 
 ## Labels
 
 #### List existing labels
 ```C#
-bool loginResult = await client.Login();
 List<string> labels = await client.ListLabels();
-bool logoutResult = await client.Logout();
 ```
 
 #### Check if a label exists
 ```C#
-bool loginResult = await client.Login();
 bool exists = await client.LabelExists(label);
-bool logoutResult = await client.Logout();
 ```
 
 #### Add a new label
 ```C#
-bool loginResult = await client.Login();
 bool addLabelResult = await client.AddLabel(label);
-bool logoutResult = await client.Logout();
 ```
 
 #### Remove an existing label
 ```C#
-bool loginResult = await client.Login();
 bool removeLabelResult = await client.RemoveLabel(label);
-bool logoutResult = await client.Logout();
 ```
 
 #### Assing a label to a torrent (if label dont exists it will be created)
 ```C#
-bool loginResult = await client.Login();
 bool assignResult = await client.SetTorrentLabel(torrentHash, label);
-bool logoutResult = await client.Logout();
 ```
