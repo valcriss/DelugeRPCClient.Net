@@ -1,4 +1,4 @@
-# DelugeRPCClient.Net
+# DelugeRPCClient.Net [![.NET](https://github.com/valcriss/DelugeRPCClient.Net/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/valcriss/DelugeRPCClient.Net/actions/workflows/dotnet.yml)
 .Net DelugeWeb RPC Client is a refactorisation of the great work done by [SilverCard](https://github.com/SilverCard) on [DelugeWebClient](https://github.com/SilverCard/DelugeWebClient)
 
 ---
