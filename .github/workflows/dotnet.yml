@@ -21,7 +21,7 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
-    - name: Publish TrinityCore.GameClient.Net.Lib
+    - name: Publish DelugeRPCClient.Net
       uses: brandedoutcast/publish-nuget@v2.5.5
       with:
           PROJECT_FILE_PATH: DelugeRPCClient.Net/DelugeRPCClient.Net.csproj
