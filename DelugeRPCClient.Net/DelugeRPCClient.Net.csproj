@@ -9,6 +9,7 @@
     <RepositoryType>git</RepositoryType>
     <Description>This library allows you to connect to the delugeweb RPC API.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
