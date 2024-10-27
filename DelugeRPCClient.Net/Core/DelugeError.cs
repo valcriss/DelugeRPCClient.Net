@@ -7,7 +7,7 @@ namespace DelugeRPCClient.Net.Core
 {
     internal class DelugeError
     {
-        [JsonProperty(PropertyName = "messag")]
+        [JsonProperty(PropertyName = "message")]
         public String Message { get; set; }
 
         [JsonProperty(PropertyName = "code")]
