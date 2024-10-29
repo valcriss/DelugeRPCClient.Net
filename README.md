@@ -78,6 +78,11 @@ Resume Torrent
 bool resumeResult = await client.ResumeTorrent(torrentHash);
 ```
 
+#### Recheck Torrents
+```C#
+bool recheckTorrentResult = await client.RecheckTorrents(List<string> torrentsHash);
+```
+
 ## Configs
 
 #### List configs

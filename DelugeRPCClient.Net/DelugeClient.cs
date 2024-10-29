@@ -149,6 +149,16 @@ namespace DelugeRPCClient.Net
             return result == null;
         }
 
+        /// <summary>
+        /// Recheck torrents
+        /// </summary>
+        /// <param name="hash">Hash of the target torrents</param>
+        /// <returns>true if the action is successfull</returns>
+        public async Task<bool?> RecheckTorrents(List<string> hash)
+        {
+            return await SendRequest<bool?>("core.force_recheck", hash);
+        }
+
         #endregion
 
         #region Config
