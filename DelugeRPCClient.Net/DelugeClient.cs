@@ -1,4 +1,5 @@
-﻿using DelugeRPCClient.Net.Models;
+﻿using DelugeRPCClient.Net.Core;
+using DelugeRPCClient.Net.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -69,6 +70,19 @@ namespace DelugeRPCClient.Net
         }
 
         /// <summary>
+        /// List all torrents with details optionnaly filtered
+        /// </summary>
+        /// <param name="filters">optional filters</param>
+        /// <returns>List of torrents</returns>
+        public async Task<List<TorrentExtended>> ListTorrentsExtended(Dictionary<string, string> filters = null)
+        {
+            filters = filters ?? new Dictionary<string, string>();
+            var keys = typeof(TorrentExtended).GetAllJsonPropertyFromType();
+            Dictionary<string, TorrentExtended> result = await SendRequest<Dictionary<string, TorrentExtended>>("core.get_torrents_status", filters, keys);
+            return result.Values.ToList();
+        }
+
+        /// <summary>
         /// Get torrent informations by torrent hash
         /// </summary>
         /// <param name="hash">The requested torrent hash</param>
@@ -76,6 +90,17 @@ namespace DelugeRPCClient.Net
         public async Task<Torrent> GetTorrent(string hash)
         {
             List<Torrent> torrents = await ListTorrents(new Dictionary<string, string>() { { "hash", hash } });
+            return torrents.Count > 0 ? torrents[0] : null;
+        }
+
+        /// <summary>
+        /// Get torrent informations with details by torrent hash
+        /// </summary>
+        /// <param name="hash">The requested torrent hash</param>
+        /// <returns>the torrent object</returns>
+        public async Task<TorrentExtended> GetTorrentExtended(string hash)
+        {
+            List<TorrentExtended> torrents = await ListTorrentsExtended(new Dictionary<string, string>() { { "hash", hash } });
             return torrents.Count > 0 ? torrents[0] : null;
         }
 
@@ -115,6 +140,31 @@ namespace DelugeRPCClient.Net
         }
 
         /// <summary>
+        /// Add a new torrent by .torrent url
+        /// </summary>
+        /// <param name="file">url of the .torrent file</param>
+        /// <param name="options">Optional torrent options</param>
+        /// <returns>the torrent object</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public async Task<Torrent> AddTorrentByUrl(string url, TorrentOptions options = null)
+        {
+            if (String.IsNullOrWhiteSpace(url)) throw new ArgumentException(nameof(url));
+            var request = CreateRequest("web.download_torrent_from_url", url, options);
+            request.NullValueHandling = NullValueHandling.Ignore;
+            string pathTemp = await SendRequest<string>(request);
+
+            request = CreateRequest("web.add_torrents", new object[] { new object[] { new { options = new object { }, path = pathTemp } } });
+            var resultAdd = await SendRequest<List<List<Object>>>(request);
+            return await GetTorrent(resultAdd.Select(item =>
+                new ResultEntry
+                {
+                    Success = item[0] is bool success && success,
+                    Hash = item[1] as string
+                }
+            ).FirstOrDefault().Hash);
+        }
+
+        /// <summary>
         /// Remove a torrent from deluge
         /// </summary>
         /// <param name="hash">The torrent's hash to be deleted</param>
@@ -147,6 +197,29 @@ namespace DelugeRPCClient.Net
             bool? result = await SendRequest<bool?>("core.resume_torrent", hash);
             Thread.Sleep(3000);
             return result == null;
+        }
+
+        /// <summary>
+        /// Recheck torrents
+        /// </summary>
+        /// <param name="hash">Hash of the target torrents</param>
+        /// <returns>true if the action is successfull</returns>
+        public async Task<bool?> RecheckTorrents(List<string> hash)
+        {
+            return await SendRequest<bool?>("core.force_recheck", hash);
+        }
+
+        #endregion
+
+        #region Config
+
+        /// <summary>
+        /// List all existing labels
+        /// </summary>
+        /// <returns>list of labels</returns>
+        public async Task<Config> ListConfigs()
+        {
+            return await SendRequest<Config>("core.get_config");
         }
 
         #endregion

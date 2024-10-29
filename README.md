@@ -46,9 +46,19 @@ List torrents
 List<Torrent> torrents = await client.ListTorrents();
 ```
 
+List torrents extended
+```C#
+List<TorrentExtended> torrents = await client.ListTorrentsExtended();
+```
+
 Get torrent by hash
 ```C#
 Torrent torrent = await client.GetTorrent(torrentHash);
+```
+
+Get torrent extended by hash
+```C#
+TorrentExtended torrent = await client.GetTorrentExtended(torrentHash);
 ```
 
 #### Add Torrent
@@ -61,6 +71,11 @@ Torrent torrent = await client.AddTorrentByMagnet(torrentMagnetUri);
 Add a torrent by .torrent file
 ```C#
 Torrent torrent = await client.AddTorrentByFile(torrentFilename);
+```
+
+Add a torrent by .torrent url
+```C#
+Torrent torrent = await client.AddTorrentByUrl(torrentUrl);
 ```
 
 #### Remove Torrent
@@ -76,6 +91,18 @@ bool pauseResult = await client.PauseTorrent(torrentHash);
 Resume Torrent
 ```C#
 bool resumeResult = await client.ResumeTorrent(torrentHash);
+```
+
+#### Recheck Torrents
+```C#
+bool recheckTorrentResult = await client.RecheckTorrents(List<string> torrentsHash);
+```
+
+## Configs
+
+#### List configs
+```C#
+List<Config> config = await client.ListConfigs();
 ```
 
 ## Labels

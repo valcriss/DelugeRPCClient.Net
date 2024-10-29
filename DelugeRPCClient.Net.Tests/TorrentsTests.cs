@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -26,6 +27,25 @@ namespace DelugeRPCClient.Net.Tests
             Assert.AreNotEqual(0, torrents.Count);
 
             Torrent torrent = await client.GetTorrent(torrents[0].Hash);
+            Assert.IsNotNull(torrent);
+
+            bool logoutResult = await client.Logout();
+            Assert.IsTrue(logoutResult);
+        }
+
+        [TestMethod]
+        public async Task ListAndGetTorrentExtended()
+        {
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
+
+            bool loginResult = await client.Login();
+            Assert.IsTrue(loginResult);
+
+            List<TorrentExtended> torrents = await client.ListTorrentsExtended();
+            Assert.IsNotNull(torrents);
+            Assert.AreNotEqual(0, torrents.Count);
+
+            TorrentExtended torrent = await client.GetTorrentExtended(torrents[0].Hash);
             Assert.IsNotNull(torrent);
 
             bool logoutResult = await client.Logout();
@@ -73,6 +93,26 @@ namespace DelugeRPCClient.Net.Tests
         }
 
         [TestMethod]
+        public async Task AddRemoveTorrentByUrl()
+        {
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
+
+            bool loginResult = await client.Login();
+            Assert.IsTrue(loginResult);
+
+            Torrent torrent = await client.AddTorrentByUrl(Constants.TestTorrentUrl);
+            Assert.IsNotNull(torrent);
+
+            Thread.Sleep(1000);
+
+            bool removeTorrentResult = await client.RemoveTorrent(torrent.Hash);
+            Assert.IsTrue(removeTorrentResult);
+
+            bool logoutResult = await client.Logout();
+            Assert.IsTrue(logoutResult);
+        }
+
+        [TestMethod]
         public async Task PauseResumeTorrent()
         {
             DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
@@ -100,6 +140,27 @@ namespace DelugeRPCClient.Net.Tests
                 bool resumeResult = await client.ResumeTorrent(torrent.Hash);
                 Assert.IsTrue(resumeResult);              
             }           
+
+            bool logoutResult = await client.Logout();
+            Assert.IsTrue(logoutResult);
+        }
+
+        [TestMethod]
+        public async Task RecheckTorrents()
+        {
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
+
+            bool loginResult = await client.Login();
+            Assert.IsTrue(loginResult);
+
+            List<Torrent> torrents = await client.ListTorrents();
+            Assert.IsNotNull(torrents);
+            Assert.AreNotEqual(0, torrents.Count);
+
+            Torrent torrent = torrents[0];
+
+            bool? recheckResult = await client.RecheckTorrents(torrent.Hash.Split(",").ToList());
+            Assert.IsNull(recheckResult);
 
             bool logoutResult = await client.Logout();
             Assert.IsTrue(logoutResult);

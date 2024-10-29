@@ -11,5 +11,6 @@ namespace DelugeRPCClient.Net.Tests
         internal const string TestLabelName = "testlabel";
         internal const string TorrentMagnet = "magnet:?xt=urn:btih:30987c19cf0eae3cf47766f387c621fa78a58ab9&dn=debian-9.2.1-amd64-netinst.iso";
         internal const string TestTorrentFilename = "test.torrent";
+        internal const string TestTorrentUrl = "https://archive.org/download/die_siedler_2_151/die_siedler_2_151_archive.torrent";
     }
 }
