@@ -70,6 +70,19 @@ namespace DelugeRPCClient.Net
         }
 
         /// <summary>
+        /// List all torrents with details optionnaly filtered
+        /// </summary>
+        /// <param name="filters">optional filters</param>
+        /// <returns>List of torrents</returns>
+        public async Task<List<TorrentExtended>> ListTorrentsExtended(Dictionary<string, string> filters = null)
+        {
+            filters = filters ?? new Dictionary<string, string>();
+            var keys = typeof(TorrentExtended).GetAllJsonPropertyFromType();
+            Dictionary<string, TorrentExtended> result = await SendRequest<Dictionary<string, TorrentExtended>>("core.get_torrents_status", filters, keys);
+            return result.Values.ToList();
+        }
+
+        /// <summary>
         /// Get torrent informations by torrent hash
         /// </summary>
         /// <param name="hash">The requested torrent hash</param>
@@ -77,6 +90,17 @@ namespace DelugeRPCClient.Net
         public async Task<Torrent> GetTorrent(string hash)
         {
             List<Torrent> torrents = await ListTorrents(new Dictionary<string, string>() { { "hash", hash } });
+            return torrents.Count > 0 ? torrents[0] : null;
+        }
+
+        /// <summary>
+        /// Get torrent informations with details by torrent hash
+        /// </summary>
+        /// <param name="hash">The requested torrent hash</param>
+        /// <returns>the torrent object</returns>
+        public async Task<TorrentExtended> GetTorrentExtended(string hash)
+        {
+            List<TorrentExtended> torrents = await ListTorrentsExtended(new Dictionary<string, string>() { { "hash", hash } });
             return torrents.Count > 0 ? torrents[0] : null;
         }
 

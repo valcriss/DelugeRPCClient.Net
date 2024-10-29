@@ -46,9 +46,19 @@ List torrents
 List<Torrent> torrents = await client.ListTorrents();
 ```
 
+List torrents extended
+```C#
+List<TorrentExtended> torrents = await client.ListTorrentsExtended();
+```
+
 Get torrent by hash
 ```C#
 Torrent torrent = await client.GetTorrent(torrentHash);
+```
+
+Get torrent extended by hash
+```C#
+TorrentExtended torrent = await client.GetTorrentExtended(torrentHash);
 ```
 
 #### Add Torrent
@@ -61,7 +71,6 @@ Torrent torrent = await client.AddTorrentByMagnet(torrentMagnetUri);
 Add a torrent by .torrent file
 ```C#
 Torrent torrent = await client.AddTorrentByFile(torrentFilename);
-```
 ```
 
 Add a torrent by .torrent url

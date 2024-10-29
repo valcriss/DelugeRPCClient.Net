@@ -34,6 +34,25 @@ namespace DelugeRPCClient.Net.Tests
         }
 
         [TestMethod]
+        public async Task ListAndGetTorrentExtended()
+        {
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
+
+            bool loginResult = await client.Login();
+            Assert.IsTrue(loginResult);
+
+            List<TorrentExtended> torrents = await client.ListTorrentsExtended();
+            Assert.IsNotNull(torrents);
+            Assert.AreNotEqual(0, torrents.Count);
+
+            TorrentExtended torrent = await client.GetTorrentExtended(torrents[0].Hash);
+            Assert.IsNotNull(torrent);
+
+            bool logoutResult = await client.Logout();
+            Assert.IsTrue(logoutResult);
+        }
+
+        [TestMethod]
         public async Task AddRemoveTorrentByMagnet()
         {
             DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
