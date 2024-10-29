@@ -1,4 +1,5 @@
-﻿using DelugeRPCClient.Net.Models;
+﻿using DelugeRPCClient.Net.Core;
+using DelugeRPCClient.Net.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -112,6 +113,31 @@ namespace DelugeRPCClient.Net
             request.NullValueHandling = NullValueHandling.Ignore;
             string hash = await SendRequest<string>(request);
             return await GetTorrent(hash);
+        }
+
+        /// <summary>
+        /// Add a new torrent by .torrent url
+        /// </summary>
+        /// <param name="file">url of the .torrent file</param>
+        /// <param name="options">Optional torrent options</param>
+        /// <returns>the torrent object</returns>
+        /// <exception cref="ArgumentException"></exception>
+        public async Task<Torrent> AddTorrentByUrl(string url, TorrentOptions options = null)
+        {
+            if (String.IsNullOrWhiteSpace(url)) throw new ArgumentException(nameof(url));
+            var request = CreateRequest("web.download_torrent_from_url", url, options);
+            request.NullValueHandling = NullValueHandling.Ignore;
+            string pathTemp = await SendRequest<string>(request);
+
+            request = CreateRequest("web.add_torrents", new object[] { new object[] { new { options = new object { }, path = pathTemp } } });
+            var resultAdd = await SendRequest<List<List<Object>>>(request);
+            return await GetTorrent(resultAdd.Select(item =>
+                new ResultEntry
+                {
+                    Success = item[0] is bool success && success,
+                    Hash = item[1] as string
+                }
+            ).FirstOrDefault().Hash);
         }
 
         /// <summary>

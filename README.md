@@ -62,6 +62,12 @@ Add a torrent by .torrent file
 ```C#
 Torrent torrent = await client.AddTorrentByFile(torrentFilename);
 ```
+```
+
+Add a torrent by .torrent url
+```C#
+Torrent torrent = await client.AddTorrentByUrl(torrentUrl);
+```
 
 #### Remove Torrent
 ```C#

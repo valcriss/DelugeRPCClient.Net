@@ -16,4 +16,11 @@ namespace DelugeRPCClient.Net.Core
         [JsonProperty(PropertyName = "error")]
         public DelugeError Error { get; set; }
     }
+
+    internal class ResultEntry
+    {
+        public bool Success { get; set; }
+        public string Hash { get; set; }
+
+    }
 }
