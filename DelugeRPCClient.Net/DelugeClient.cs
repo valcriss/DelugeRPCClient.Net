@@ -151,6 +151,19 @@ namespace DelugeRPCClient.Net
 
         #endregion
 
+        #region Config
+
+        /// <summary>
+        /// List all existing labels
+        /// </summary>
+        /// <returns>list of labels</returns>
+        public async Task<Config> ListConfigs()
+        {
+            return await SendRequest<Config>("core.get_config");
+        }
+
+        #endregion
+
         #region Labels
 
         /// <summary>
