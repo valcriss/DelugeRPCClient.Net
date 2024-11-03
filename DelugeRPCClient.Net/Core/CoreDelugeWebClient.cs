@@ -61,7 +61,9 @@ namespace DelugeRPCClient.Net.Core
             StringContent content = new StringContent(json);
             content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
 
-            var responseMessage = await HttpClient.PostAsync(Url, content);
+            var httpClient = new HttpClient();
+            httpClient.Timeout = TimeSpan.FromMilliseconds(30);
+            var responseMessage = await httpClient.PostAsync(Url, content);
             responseMessage.EnsureSuccessStatusCode();
 
             var responseJson = await responseMessage.Content.ReadAsStringAsync();
