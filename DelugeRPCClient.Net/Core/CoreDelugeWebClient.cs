@@ -70,16 +70,10 @@ namespace DelugeRPCClient.Net.Core
         {
             StringContent content = new StringContent(json);
             content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
-            
-            HttpResponseMessage responseMessage = null;
 
-            using (var cts = new CancellationTokenSource(DelugeClientConfig.Timeout))
-            {
-                responseMessage = await HttpClient.PostAsync(Url, content).ConfigureAwait(false);
-            }
-
-            if (responseMessage == null) throw new DelugeClientException("No response from server.");
-
+            var httpClient = new HttpClient();
+            httpClient.Timeout = DelugeClientConfig.Timeout;
+            var responseMessage = await httpClient.PostAsync(Url, content);
             responseMessage.EnsureSuccessStatusCode();
 
             var responseJson = await responseMessage.Content.ReadAsStringAsync();
