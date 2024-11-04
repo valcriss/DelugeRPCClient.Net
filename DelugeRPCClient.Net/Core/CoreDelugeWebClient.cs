@@ -37,6 +37,7 @@ namespace DelugeRPCClient.Net.Core
             }
 
             HttpClient = new HttpClient(HttpClientHandler, true);
+            HttpClient.Timeout = DelugeClientConfig.Timeout;
 
             RequestId = 1;
 
@@ -70,10 +71,8 @@ namespace DelugeRPCClient.Net.Core
         {
             StringContent content = new StringContent(json);
             content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
-
-            var httpClient = new HttpClient();
-            httpClient.Timeout = DelugeClientConfig.Timeout;
-            var responseMessage = await httpClient.PostAsync(Url, content);
+           
+            var responseMessage = await HttpClient.PostAsync(Url, content);
             responseMessage.EnsureSuccessStatusCode();
 
             var responseJson = await responseMessage.Content.ReadAsStringAsync();

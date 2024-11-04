@@ -10,6 +10,6 @@ namespace DelugeRPCClient.Net
 
         public bool IgnoreSslErrors { get; set; } = true;
 
-        public TimeSpan Timeout { get; set; } = TimeSpan.FromMilliseconds(30);
+        public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(3);
     }
 }

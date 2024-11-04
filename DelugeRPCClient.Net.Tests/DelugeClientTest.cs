@@ -14,7 +14,12 @@ namespace DelugeRPCClient.Net.Tests
     {
         protected async Task<DelugeClient> Login()
         {
-            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
+            DelugeClientConfig config = new DelugeClientConfig()
+            {
+                IgnoreSslErrors = true,
+                Timeout = new TimeSpan(0, 0, 30)
+            };
+            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword, config);
             bool loginResult = await client.Login();
             Assert.IsTrue(loginResult);
 
