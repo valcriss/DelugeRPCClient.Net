@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,72 +10,58 @@ using System.Threading.Tasks;
 namespace DelugeRPCClient.Net.Tests
 {
     [TestClass]
-    public class LabelTests
+    public class LabelTests : DelugeClientTest
     {
         [TestMethod]
         public async Task ListLabels()
         {
-            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
-
-            bool loginResult = await client.Login();
-            Assert.IsTrue(loginResult);
-
+            DelugeClient client = await Login();
+            
+            await AddTestLabel(client);
+            
             List<string> labels = await client.ListLabels();
             Assert.IsNotNull(labels);
             Assert.AreNotEqual(0, labels.Count);
+            
+            await RemoveTestLabel(client);
 
-            bool logoutResult = await client.Logout();
-            Assert.IsTrue(logoutResult);
+            await Logout(client);
         }
 
         [TestMethod]
-        public async Task AddRemoveLabel()
+        public async Task AddAndRemoveLabel()
         {
-            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
+            DelugeClient client = await Login();
 
-            bool loginResult = await client.Login();
-            Assert.IsTrue(loginResult);
+            await AddTestLabel(client);
 
-            bool addLabelResult = await client.AddLabel(Constants.TestLabelName);
-            Assert.IsTrue(addLabelResult);
+            await RemoveTestLabel(client);
 
-            Thread.Sleep(1000);
-
-            bool removeLabelResult = await client.RemoveLabel(Constants.TestLabelName);
-            Assert.IsTrue(removeLabelResult);
-
-            bool logoutResult = await client.Logout();
-            Assert.IsTrue(logoutResult);
+            await Logout(client);
         }
 
         [TestMethod]
         public async Task AssignLabel()
         {
-            DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
+            DelugeClient client = await Login();
 
-            bool loginResult = await client.Login();
-            Assert.IsTrue(loginResult);
+            await AddTestLabel(client);
 
-            List<Torrent> torrents = await client.ListTorrents(new Dictionary<string, string>() { { "label", "" } });
-            Assert.IsNotNull(torrents);
-            Assert.AreNotEqual(0, torrents.Count);
-            
-            Torrent torrent = torrents[0];
+            Torrent testTorrent = await AddTestTorrent(client);
 
-            bool assignResult = await client.SetTorrentLabel(torrent.Hash, Constants.TestLabelName);
+            bool assignResult = await client.SetTorrentLabel(testTorrent.Hash, Constants.TestLabelName);
             Assert.IsTrue(assignResult);
             Thread.Sleep(1000);
 
-            bool unsertLabelResult = await client.SetTorrentLabel(torrent.Hash, null);
+            bool unsertLabelResult = await client.SetTorrentLabel(testTorrent.Hash, null);
             Assert.IsTrue(unsertLabelResult);
             Thread.Sleep(1000);
 
-            bool removeLabelResult = await client.RemoveLabel(Constants.TestLabelName);
-            Assert.IsTrue(removeLabelResult);
-            Thread.Sleep(1000);
+            await RemoveTestLabel(client);
 
-            bool logoutResult = await client.Logout();
-            Assert.IsTrue(logoutResult);
+            await RemoveTestTorrent(client, testTorrent);          
+
+            await Logout(client);
         }
     }
 }

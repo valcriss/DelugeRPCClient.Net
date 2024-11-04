@@ -1,0 +1,16 @@
+services:
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    volumes:
+      - ./docker/config:/config
+      - ./docker/downloads:/downloads
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - DELUGE_LOGLEVEL=error #optional
+    ports:
+      - 8112:8112
+      - 6881:6881
+      - 6881:6881/udp
