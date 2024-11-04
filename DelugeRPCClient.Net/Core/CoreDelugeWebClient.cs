@@ -31,7 +31,7 @@ namespace DelugeRPCClient.Net.Core
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
 
-            if (config.IgnoreSslErrors)
+            if (DelugeClientConfig.IgnoreSslErrors)
             {
                 HttpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
             }
