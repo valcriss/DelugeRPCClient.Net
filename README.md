@@ -23,6 +23,17 @@ PM> Install-Package DelugeRPCClient.Net -Version x.x.x
 DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 ```
 
+## Create a DelugeClient Object with advanced options
+```C#
+DelugeClientConfig config = new DelugeClientConfig()
+{
+    IgnoreSslErrors = true,
+    Timeout = new TimeSpan(0, 0, 30)
+};
+
+DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword, config);
+```
+
 ## Authentification
 
 #### Login

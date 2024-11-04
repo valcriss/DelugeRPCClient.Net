@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DelugeRPCClient.Net.Core
@@ -16,9 +17,12 @@ namespace DelugeRPCClient.Net.Core
         private HttpClientHandler HttpClientHandler { get; set; }
         private HttpClient HttpClient { get; set; }
         private int RequestId { get; set; }
+        private DelugeClientConfig DelugeClientConfig { get; set; }
 
-        public CoreDelugeWebClient(string url)
+        public CoreDelugeWebClient(string url, DelugeClientConfig config = null)
         {
+            DelugeClientConfig = config ?? new DelugeClientConfig();
+
             HttpClientHandler = new HttpClientHandler
             {
                 AllowAutoRedirect = true,
@@ -26,14 +30,19 @@ namespace DelugeRPCClient.Net.Core
                 CookieContainer = new CookieContainer(),
                 AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
             };
-            HttpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
-            
+
+            if (DelugeClientConfig.IgnoreSslErrors)
+            {
+                HttpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
+            }
+
             HttpClient = new HttpClient(HttpClientHandler, true);
-            
+            HttpClient.Timeout = DelugeClientConfig.Timeout;
+
             RequestId = 1;
 
             Url = url;
-        }        
+        }
 
         protected async Task<T> SendRequest<T>(string method, params object[] parameters)
         {
@@ -47,7 +56,9 @@ namespace DelugeRPCClient.Net.Core
                 NullValueHandling = webRequest.NullValueHandling
             });
 
+
             var responseJson = await PostJson(requestJson);
+
             var webResponse = JsonConvert.DeserializeObject<DelugeResponsee<T>>(responseJson);
 
             if (webResponse.Error != null) throw new DelugeClientException(webResponse.Error.Message);
@@ -60,10 +71,8 @@ namespace DelugeRPCClient.Net.Core
         {
             StringContent content = new StringContent(json);
             content.Headers.ContentType = new MediaTypeWithQualityHeaderValue("application/json");
-
-            var httpClient = new HttpClient();
-            httpClient.Timeout = TimeSpan.FromMilliseconds(30);
-            var responseMessage = await httpClient.PostAsync(Url, content);
+           
+            var responseMessage = await HttpClient.PostAsync(Url, content);
             responseMessage.EnsureSuccessStatusCode();
 
             var responseJson = await responseMessage.Content.ReadAsStringAsync();

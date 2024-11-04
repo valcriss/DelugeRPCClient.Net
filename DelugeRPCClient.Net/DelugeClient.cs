@@ -25,7 +25,7 @@ namespace DelugeRPCClient.Net
         /// </summary>
         /// <param name="url">url of delugeweb (like http://localhost:8112/json)</param>
         /// <param name="password">delugeweb password</param>
-        public DelugeClient(string url, string password) : base(url)
+        public DelugeClient(string url, string password,DelugeClientConfig config = null) : base(url, config)
         {
             Password = password;
         }
