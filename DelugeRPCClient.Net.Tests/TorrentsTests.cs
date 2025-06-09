@@ -17,6 +17,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task ListAndGetTorrent()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             Torrent testTorrent = await AddTestTorrent(client);
@@ -36,6 +37,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task ListAndGetTorrentExtended()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             Torrent testTorrent = await AddTestTorrent(client);
@@ -55,12 +57,13 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AddRemoveTorrentByMagnet()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             Torrent torrent = await client.AddTorrentByMagnet(Constants.TorrentMagnet);
             Assert.IsNotNull(torrent);
 
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
 
             bool removeTorrentResult = await client.RemoveTorrent(torrent.Hash);
             Assert.IsTrue(removeTorrentResult);
@@ -71,12 +74,13 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AddRemoveTorrentByFile()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             Torrent torrent = await client.AddTorrentByFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Constants.TestTorrentFilename));
             Assert.IsNotNull(torrent);
 
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
 
             bool removeTorrentResult = await client.RemoveTorrent(torrent.Hash);
             Assert.IsTrue(removeTorrentResult);
@@ -87,12 +91,13 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AddRemoveTorrentByUrl()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             Torrent torrent = await client.AddTorrentByUrl(Constants.TestTorrentUrl);
             Assert.IsNotNull(torrent);
 
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
 
             bool removeTorrentResult = await client.RemoveTorrent(torrent.Hash);
             Assert.IsTrue(removeTorrentResult);
@@ -103,6 +108,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task PauseResumeTorrent()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             Torrent testTorrent = await AddTestTorrent(client);
@@ -136,6 +142,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task RecheckTorrents()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             Torrent testTorrent = await AddTestTorrent(client);

@@ -9,6 +9,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]        
         public async Task LoginLogout()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
             bool logoutResult = await client.Logout();
             Assert.IsTrue(logoutResult);

@@ -15,6 +15,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task ListLabels()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
             
             await AddTestLabel(client);
@@ -31,6 +32,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AddAndRemoveLabel()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             await AddTestLabel(client);
@@ -43,6 +45,7 @@ namespace DelugeRPCClient.Net.Tests
         [TestMethod]
         public async Task AssignLabel()
         {
+            SkipIfNoIntegration();
             DelugeClient client = await Login();
 
             await AddTestLabel(client);
@@ -51,11 +54,11 @@ namespace DelugeRPCClient.Net.Tests
 
             bool assignResult = await client.SetTorrentLabel(testTorrent.Hash, Constants.TestLabelName);
             Assert.IsTrue(assignResult);
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
 
             bool unsertLabelResult = await client.SetTorrentLabel(testTorrent.Hash, null);
             Assert.IsTrue(unsertLabelResult);
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
 
             await RemoveTestLabel(client);
 

@@ -12,6 +12,13 @@ namespace DelugeRPCClient.Net.Tests
 {
     public class DelugeClientTest
     {
+        protected void SkipIfNoIntegration()
+        {
+            if (Environment.GetEnvironmentVariable("RUN_INTEGRATION_TESTS") != "true")
+            {
+                Assert.Inconclusive("Integration tests disabled");
+            }
+        }
         protected async Task<DelugeClient> Login()
         {
             DelugeClientConfig config = new DelugeClientConfig()
@@ -36,7 +43,7 @@ namespace DelugeRPCClient.Net.Tests
         {
             Torrent torrent = await client.AddTorrentByFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Constants.TestTorrentFilename));
             Assert.IsNotNull(torrent);
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
             return torrent;
         }
 
@@ -44,21 +51,21 @@ namespace DelugeRPCClient.Net.Tests
         {
             bool removeTorrentResult = await client.RemoveTorrent(torrent.Hash);
             Assert.IsTrue(removeTorrentResult);
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
         }
 
         protected async Task AddTestLabel(DelugeClient client)
         {
             bool addLabelResult = await client.AddLabel(Constants.TestLabelName);
             Assert.IsTrue(addLabelResult);
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
         }
 
         protected async Task RemoveTestLabel(DelugeClient client)
         {
             bool removeLabelResult = await client.RemoveLabel(Constants.TestLabelName);
             Assert.IsTrue(removeLabelResult);
-            Thread.Sleep(1000);
+            await Task.Delay(1000);
         }
     }
 }

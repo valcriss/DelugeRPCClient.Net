@@ -4,10 +4,10 @@ using System.Text;
 
 namespace DelugeRPCClient.Net.Tests
 {
-    internal class Constants
+    internal static class Constants
     {
-        internal const string DelugeUrl = "http://localhost:8112/json";
-        internal const string DelugePassword = "deluge";
+        internal static string DelugeUrl => Environment.GetEnvironmentVariable("DELUGE_URL") ?? "http://localhost:8112/json";
+        internal static string DelugePassword => Environment.GetEnvironmentVariable("DELUGE_PASSWORD") ?? "deluge";
         internal const string TestLabelName = "testlabel";
         internal const string TorrentMagnet = "magnet:?xt=urn:btih:30987c19cf0eae3cf47766f387c621fa78a58ab9&dn=debian-9.2.1-amd64-netinst.iso";
         internal const string TestTorrentFilename = "test.torrent";

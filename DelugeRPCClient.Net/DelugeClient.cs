@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,7 +26,7 @@ namespace DelugeRPCClient.Net
         /// </summary>
         /// <param name="url">url of delugeweb (like http://localhost:8112/json)</param>
         /// <param name="password">delugeweb password</param>
-        public DelugeClient(string url, string password,DelugeClientConfig config = null) : base(url, config)
+        public DelugeClient(string url, string password, DelugeClientConfig config = null, HttpClient httpClient = null) : base(url, config, httpClient)
         {
             Password = password;
         }
@@ -183,7 +184,7 @@ namespace DelugeRPCClient.Net
         public async Task<bool> PauseTorrent(string hash)
         {
             bool? result =  await SendRequest<bool?>("core.pause_torrent", hash);
-            Thread.Sleep(3000);
+            await Task.Delay(3000);
             return result == null;
         }
 
@@ -195,7 +196,7 @@ namespace DelugeRPCClient.Net
         public async Task<bool> ResumeTorrent(string hash)
         {
             bool? result = await SendRequest<bool?>("core.resume_torrent", hash);
-            Thread.Sleep(3000);
+            await Task.Delay(3000);
             return result == null;
         }
 

@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 namespace DelugeRPCClient.Net.Tests
 {
     [TestClass]
-    public class ConfigTests
+    public class ConfigTests : DelugeClientTest
     {
         [TestMethod]
         public async Task ListConfigs()
         {
+            SkipIfNoIntegration();
             DelugeClient client = new DelugeClient(url: Constants.DelugeUrl, password: Constants.DelugePassword);
 
             bool loginResult = await client.Login();

@@ -11,15 +11,16 @@ using System.Threading.Tasks;
 
 namespace DelugeRPCClient.Net.Core
 {
-    public class CoreDelugeWebClient
+    public class CoreDelugeWebClient : IDisposable
     {
         private string Url { get; set; }
         private HttpClientHandler HttpClientHandler { get; set; }
+        private readonly bool _ownsClient;
         private HttpClient HttpClient { get; set; }
         private int RequestId { get; set; }
         private DelugeClientConfig DelugeClientConfig { get; set; }
 
-        public CoreDelugeWebClient(string url, DelugeClientConfig config = null)
+        public CoreDelugeWebClient(string url, DelugeClientConfig config = null, HttpClient httpClient = null)
         {
             DelugeClientConfig = config ?? new DelugeClientConfig();
 
@@ -36,7 +37,16 @@ namespace DelugeRPCClient.Net.Core
                 HttpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => { return true; };
             }
 
-            HttpClient = new HttpClient(HttpClientHandler, true);
+            if (httpClient == null)
+            {
+                HttpClient = new HttpClient(HttpClientHandler, true);
+                _ownsClient = true;
+            }
+            else
+            {
+                HttpClient = httpClient;
+                _ownsClient = false;
+            }
             HttpClient.Timeout = DelugeClientConfig.Timeout;
 
             RequestId = 1;
@@ -59,7 +69,7 @@ namespace DelugeRPCClient.Net.Core
 
             var responseJson = await PostJson(requestJson);
 
-            var webResponse = JsonConvert.DeserializeObject<DelugeResponsee<T>>(responseJson);
+            var webResponse = JsonConvert.DeserializeObject<DelugeResponse<T>>(responseJson);
 
             if (webResponse.Error != null) throw new DelugeClientException(webResponse.Error.Message);
             if (webResponse.ResponseId != webRequest.RequestId) throw new DelugeClientException("Desync.");
@@ -79,6 +89,29 @@ namespace DelugeRPCClient.Net.Core
             return responseJson;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_ownsClient)
+                {
+                    HttpClient?.Dispose();
+                    HttpClientHandler?.Dispose();
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~CoreDelugeWebClient()
+        {
+            Dispose(false);
+        }
+
         protected DelugeRequest CreateRequest(string method, params object[] parameters)
         {
             if (String.IsNullOrWhiteSpace(method)) throw new ArgumentException(nameof(method));
@@ -86,3 +119,4 @@ namespace DelugeRPCClient.Net.Core
         }
     }
 }
+
