@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DelugeRPCClient.Net.Core
 {
-    internal class DelugeResponsee<T>
+    internal class DelugeResponse<T>
     {
         [JsonProperty(PropertyName = "id")]
         public int ResponseId { get; set; }
